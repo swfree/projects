@@ -76,6 +76,7 @@ router.post('/posts/:post/comments', function(req, res, next) {
 	});
 });
 
+// Errors in the following router.param and router.put code for comments:
 router.param('comment', function(req, res, next, id) {
 	var query = Comment.findById(id);
 
@@ -85,5 +86,13 @@ router.param('comment', function(req, res, next, id) {
 
 		req.comment = comment;
 		return next();
+	});
+});
+
+router.put('/posts/:post/comments/:comment/upvote', function(req, res, next) {
+	req.comment.upvote(function(err, comment) {
+		if (err) { return next(err); }
+
+		res.json(comment);
 	});
 });
