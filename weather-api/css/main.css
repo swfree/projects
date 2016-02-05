@@ -1,0 +1,30 @@
+.row:first-child {
+  display: flex;
+  align-items: center;
+}
+
+ul {
+  list-style-type: none;
+  color: grey;
+
+}
+#location {
+  font-size: 24px;
+}
+
+span.glyphicon, span.temp {
+  font-size: 38px;
+  font-weight: bold;
+  color: black;
+  height: 40px;
+  line-height: 40px;
+  vertical-align: bottom;
+}
+
+.btn:focus,.btn:active {
+   outline: none !important;
+}
+
+.well {
+  padding-right: 50px;
+}
