@@ -2,29 +2,33 @@ $(document).ready(function(){
   var updateWeather = function(event) {    
     var location = event.data.locale.val();
     var outputList = $(this).closest("div.row").next();
-    var url = 'http://api.openweathermap.org/data/2.5/forecast?id=';
+    var url = 'http://api.openweathermap.org/data/2.5/forecast?q=';
+    var appID = '&mode=json&appid=44db6a862fba0b067b1930da0d769e98';
+    var city = location;
+    var country = 'us';
     var description = '';
     var temperature;
 
-    // City IDs
-      // Chch: 2192362
-      // Gaithersburg: 4355843
-      // NYC: 5128638
-      // SF: 5391959
-    var cityID = '5391959';
-
-    url = url + cityID + '&appid=44db6a862fba0b067b1930da0d769e98';
+    url = url + city + ',' + country + appID;
 
     // contact API for updated weather
     $.getJSON(url, function(data){
-      time = data.list[0].dt;
+      var time = data.list[0].dt;
+      var date = new Date(time*1000);
+      var hours = date.getHours();
+      var minutes = "0" + date.getMinutes();
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var month = months[date.getMonth()];
+      var day = date.getDate();
+      var formattedTime = day + ' ' + month + ' ' + hours + ':' + minutes.substr(-2);
+
       description = data.list[0].weather[0].description;
       temperature = data.list[0].main.temp;
       temperature = Math.floor(temperature*(9/5) - 460);
 
       // put inside callback
       outputList.find("li#location").html(location);
-      outputList.find("li#time").html(time);
+      outputList.find("li#time").html(formattedTime);
       outputList.find("span.temp").html('&nbsp;' + temperature + '&nbsp;F');
       outputList.find("li#description").html(description);
     });
