@@ -1,0 +1,29 @@
+{
+  "name": "weather-api",
+  "homepage": "https://github.com/swfree/projects",
+  "authors": [
+    "swfree <skye.free@gmail.com>"
+  ],
+  "description": "simple practice app with APIs",
+  "main": "weather-api",
+  "moduleType": [
+    "es6"
+  ],
+  "keywords": [
+    "weather"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.0",
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.0"
+  }
+}
