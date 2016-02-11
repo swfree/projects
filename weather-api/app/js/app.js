@@ -1,3 +1,15 @@
+'use strict';
+
+/* Module */
+var weatherApp = angular.module('weatherApp', []);
+
+/* Controllers */
+weatherApp.controller('WeatherCtrl', ['$scope', '$http', function($scope, $http) {
+  //$http.get
+  //$scope set models
+}])
+
+
 $(document).ready(function(){
   var updateWeather = function(event) {    
     var location = event.data.locale.val();
