@@ -5,11 +5,20 @@ var weatherApp = angular.module('weatherApp', []);
 
 /* Controllers */
 weatherApp.controller('WeatherCtrl', ['$scope', '$http', function($scope, $http) {
-  //$http.get
-  //$scope set models
-}])
+  $http.get('http://api.openweathermap.org/data/2.5/forecast?q=Gaithersburg,us&mode=json&appid=44db6a862fba0b067b1930da0d769e98')
+    .then(function(data) {
+      $scope.date = data.data.list[0].dt;
+      $scope.description = data.data.list[0].weather[0].description;
+      var temp = data.data.list[0].main.temp;
+      $scope.mainTemp = Math.floor(temp * (9/5) - 460);
+    }, function(errMsg){
+      console.log(errMsg);
+  });
+}]);
 
 
+/* Old static code without Angular */
+/*
 $(document).ready(function(){
   var updateWeather = function(event) {    
     var location = event.data.locale.val();

@@ -18,6 +18,7 @@
 <body ng-controller="WeatherCtrl">
   <div class="container">
 
+    <!-- Header and search bar -->
     <div class="row row-eq-height page-header">
       <div class="col-md-4 col-md-offset-2">
         <h1>Weather Forecast</h1>
@@ -30,34 +31,22 @@
           <button type="submit" class="btn btn-default">Get Forecast</button>
         </form>
       </div>
-
     </div>
 
+    <!-- Main weather and 5-day foreceast -->
     <div class="row">
       <div class="col-md-8 col-md-offset-2 well">
         <ul>
           <li id="location">Gaithersburg, MD</li>
-          <li id="time">Friday&nbsp;</li>
-          <li id="description">Cloudy</li>
+          <li id="time">{{date*1000 | date:'MMM d, y h:mm a'}}</li>
+          <li id="description">{{description.slice(0,1) | uppercase}}{{description.slice(1)}}</li>
           <br>
           <li><span class="glyphicon glyphicon-cloud"></span><span class="temp">&nbsp;42 F</span></li>
           <br>
           <li>
             <div class="btn-group btn-group-justified">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default">Fri</button>
-              </div>
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default">Sat</button>
-              </div>
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default">Sun</button>
-              </div>
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default">Mon</button>
-              </div>
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default">Tue</button>
+              <div class="btn-group" role="group" ng-repeat="weekday in ['Fri', 'Sat', 'Sun', 'Mon', 'Tue']">
+                <button type="button" class="btn btn-default">{{weekday}}</button>
               </div>
             </div>
           </li>
