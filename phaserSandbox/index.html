@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Phaser Game 1</title>
+  <script type="text/javascript" src="node_modules/phaser/dist/phaser.min.js"></script>
+  <style type="text/css">
+    body {
+        margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <script type="text/javascript">
+
+    window.onload = function() {
+
+      var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+      function preload () {
+
+        game.load.image('ground', 'assets/platform.png');
+        game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+
+      }
+
+      var platforms,
+          fixedLedge,
+          floatingLedge,
+          player,
+          cursors,
+          downPlatform,
+          upPlatform,
+          prevY;
+      var keys = {};
+
+      function create () {
+
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        /* Create platforms */
+        platforms = game.add.group();
+        platforms.enableBody = true;
+        var ground = platforms.create(0, game.world.height - 64, 'ground');
+        ground.scale.setTo(2, 2);
+        ground.body.immovable = true;
+        fixedLedge = platforms.create(400, 400, 'ground');
+        fixedLedge.body.immovable = true;
+        floatingLedge = platforms.create(-150, 250, 'ground');
+        floatingLedge.body.immovable = true;
+
+        /* Create player */
+        player = game.add.sprite(32, game.world.height - 150, 'dude');
+        game.physics.arcade.enable(player);
+        player.body.bounce.y = 0.2;
+        player.body.gravity.y = 300;
+        player.body.collideWorldBounds = true;
+        player.animations.add('left', [0, 1, 2, 3], 10, true);
+        player.animations.add('right', [5, 6, 7, 8], 10, true);
+
+        /* Create controls */
+        cursors = game.input.keyboard.createCursorKeys();
+        downPlatform = game.input.keyboard.addKey(219);
+        upPlatform = game.input.keyboard.addKey(221);
+
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('keyup', onKeyUp);
+
+        // commandButton = game.input.keyboard.addKey(91);
+        // leftBracket = game.input.keyboard.addKey(219);
+        // rightBracket = game.input.keyboard.addKey(221);
+        // game.input.keyboard.addKeyCapture(91);
+        // game.input.keyboard.addKeyCapture(219);
+        // game.input.keyboard.addKeyCapture(221);
+
+      } 
+
+      function update() {
+
+        game.physics.arcade.collide(player, platforms);
+
+        // on each update, reset player velocity to 0
+        player.body.velocity.x = 0;
+
+        /* Setup player movement */
+        if (cursors.left.isDown) {
+          //  Move to the left
+          player.body.velocity.x = -150;
+
+          player.animations.play('left');
+        } else if (cursors.right.isDown) {
+          //  Move to the right
+          player.body.velocity.x = 150;
+          player.animations.play('right');
+        } else { //  Stand still
+          player.animations.stop();
+          player.frame = 4;
+        }
+        if (!keys[91] && !keys[17] && cursors.up.isDown && player.body.touching.down) {
+          // FIXBUG: player jumps when up button is down even if CMD is garrr.
+          player.body.velocity.y = -350;
+        }
+
+        /* Setup floatingLedge movement */
+        // TODO: lock player to moving platform http://phaser.io/tutorials/coding-tips-004
+          // related: http://phaser.io/tutorials/coding-tips-003
+          // more to check out: https://github.com/gm758/keystroke_profiler/blob/master/client/app/app.js
+        // if (downPlatform.isDown) {
+        //   prevY = floatingLedge.body.position.y;
+        //   floatingLedge.body.position.y = prevY + 10;
+        //   console.log(floatingLedge.body.position.y);
+        // } else if (upPlatform.isDown) {
+        //   prevY = floatingLedge.body.position.y;
+        //   floatingLedge.body.position.y = prevY - 10;
+        //   console.log(floatingLedge.body.position.y);
+        // }
+
+        // NOTE: if using 91-CMD, must reset to false (cannot rely onKeyUp)
+        if (keys[219] && keys[91]) { // CMD + [
+          // move floating platform left and right
+          keys[219] = false; 
+          keys[91] = false;
+        } else if (keys[221] && keys[91]) { // CMD + ]
+          // move floating platform left and right
+          keys[221] = false;
+          keys[91] = false;
+        } else if (keys[18] && keys[37]) { // OPT + << 18 + 37
+          prevX = player.body.position.x;
+          player.body.position.x = prevX - 20;
+        } else if (keys[18] && keys[39]) { // OPT + >> 18 + 39
+          prevX = player.body.position.x;
+          player.body.position.x = prevX + 20;
+        } else if (keys[91] && keys[17] && keys[38]) { //CMD + CTL + up arrows
+          prevY = floatingLedge.body.position.y;
+          floatingLedge.body.position.y = prevY - 20;
+          keys[91] = false;
+          keys[17] = false;
+          keys[38] = false;
+        } else if (keys[91] && keys[17] && keys[40]) {//CMD + CTL +/down arrows
+          prevY = floatingLedge.body.position.y;
+          floatingLedge.body.position.y = prevY + 20;
+          keys[91] = false;
+          keys[17] = false;
+          keys[40] = false;
+        }
+
+        /* LIST OF MOVES
+        * Indent Left/Right: [219 ]221 + CMD91
+        * Skip word: OPT + << >>
+        * Skip to end/start of line: CMD + << >>
+        * Move line up/down: CMD + CTL + up/down arrows
+        */
+
+        // COMMAND:  91
+        // SHIFT: 16
+        // OPTION: 18
+        // CONTROL:  17
+        // LEFT ARROW: 37
+        // RIGHT ARROW: 39
+        // UP: 38
+        // DOWN: 40
+        // M:  77
+        // K:  75
+        // G: 71
+        // /:  191 
+        // B: 66
+
+
+      }
+
+      function onKeyDown(e) {
+        e.preventDefault();
+        console.log('called: ', e.which);
+        keys[e.which] = true;
+      }
+
+      function onKeyUp(e) {
+        e.preventDefault();
+        keys[e.which] = false;
+      }
+
+      // function onKeyUp(e) {
+      //   console.log('called up: ', e.which);
+      //   // e.preventDefault();
+      //   keys[e.which] = false;
+      // }
+
+    };
+
+  </script>
+
+</body>
+</html>
